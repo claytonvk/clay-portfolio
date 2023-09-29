@@ -1,3 +1,20 @@
+const lightImages = [];
+const darkImages = [];
+
+// Preload light images
+for (let i = 1; i <= 3; i++) {
+  const img = new Image();
+  img.src = `./media/light-imgs/img${i}.jpg`;
+  lightImages.push(img);
+}
+
+// Preload dark images
+for (let i = 1; i <= 3; i++) {
+  const img = new Image();
+  img.src = `./media/dark-imgs/img${i}.jpg`;
+  darkImages.push(img);
+}
+
 const mask = document.querySelector(".gradient-mask");
 const hero = document.querySelector(".hero-img");
 const logo = document.querySelector(".logo");
@@ -28,6 +45,36 @@ function changeHero() {
 logo.addEventListener("click", changeHero);
 
 window.setInterval(changeHero, 5000);
+// const mask = document.querySelector(".gradient-mask");
+// const hero = document.querySelector(".hero-img");
+// const logo = document.querySelector(".logo");
+// let img = 1;
+// let light = false;
+
+// function changeHero() {
+//   img = Math.floor(Math.random() * 3) + 1;
+//   logo.classList.toggle("light");
+//   light = logo.classList.contains("light") ? true : false;
+//   if (light) {
+hero.style.backgroundImage = `url(./media/light-imgs/img${img}.jpg)`;
+logo.style.transition = "none";
+logo.style.opacity = 0;
+logo.style.transition = "5s ease-in 5s";
+logo.src = "./media/logo-light.png";
+logo.style.opacity = "1";
+//   } else {
+hero.style.backgroundImage = `url(./media/dark-imgs/img${img}.jpg)`;
+logo.style.transition = "none";
+logo.style.opacity = 0;
+logo.style.transition = "5s ease-in 5s";
+logo.src = "./media/logo-dark.png";
+logo.style.opacity = "1";
+//   }
+// }
+
+// logo.addEventListener("click", changeHero);
+
+// window.setInterval(changeHero, 5000);
 
 window.addEventListener("scroll", () => {
   let percent =
