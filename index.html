@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clay Portfolio</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"
+        defer></script>
+    <script src="./javascripts/app.js" defer></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="hero">
+        <img src="./media/logo-dark.png" alt="" class="logo dark">
+        <div class="hero-img"></div>
+        <div class="gradient-mask"></div>
+    </div>
+    <!-- Navbar content -->
+    <nav class="navbar sticky-top navbar-expand-lg bg-white mt-3">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="./index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./views/projects.html">Projects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./views/about.html">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./views/contact.html">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="content container-fluid">
+        <div class="row title justify-content-center">
+            <div class="col">
+                <h1 class="english hidden hidden-vertical">CLAY VANDER KOLK</h1>
+                <h2 class="english hidden hidden-vertical">PORTFOLIO</h2>
+                <h3 class="hawaiin hidden hidden-vertical">Ku’ia kahele aka na’au ha’aha’a</h3>
+            </div>
+        </div>
+        <div class="row intro">
+            <div class="col-6">
+                <div class="waves blur">
+                    <img src="./media/window.png" alt="" id="window">
+                </div>
+            </div>
+            <div class="col-4 hidden hidden-right text">
+                <hr>
+                <p>
+                    I'm Clay Vander Kolk, and this page is a reflection and portfolio of my
+                    journey as a full-stack web developer with a passion for creativity and
+                    precision. My journey into web devlopment began shortly after graduating
+                    from Taylor University with a Math Education degree. While I felt
+                    passionate about the people I worked with, I quickly realized the
+                    appreciation I have for art through filmmaking projects I engaged with
+                    on the side. These passions led me straight back to coding in which I
+                    could use my mathematical brain and pair it with creativity by creating
+                    aesthetic, effective web applications. This unique blend of experiences
+                    has sculpted me into a creative thinker with a meticulous approach to
+                    problem-solving.
+                </p>
+                <hr>
+            </div>
+        </div>
+        <div class="row justify-content-end second-row">
+            <div class="col-6 text">
+                <div class="hidden hidden-left">
+                    <hr>
+                    <p>
+                        But my journey doesn't stop at technical proficiency. What truly sets me
+                        apart is my ability to connect with people and communicate ideas
+                        clearly. Whether I'm translating complex concepts into user-friendly web
+                        interfaces or collaborating with teams to bring visions to life, my
+                        dedication to clarity and creativity shines through. So, join me on this
+                        digital voyage, where innovation meets artistry, and let's explore the
+                        endless possibilities of web development together.
+                    </p>
+                </div>
+                <div class="hidden hidden-left" id="third-paragraph">
+                    <p class="hidden hidden-left">
+                        But my journey doesn't stop at technical proficiency. What truly sets me
+                        apart is my innate ability to connect with people and communicate ideas
+                        clearly. Whether I'm translating complex concepts into user-friendly web
+                        interfaces or collaborating with teams to bring visions to life, my
+                        dedication to clarity and creativity shines through. So, join me on this
+                        digital voyage, where innovation meets artistry, and let's explore the
+                        endless possibilities of web development together.
+                    </p>
+                    <hr>
+                </div>
+            </div>
+            <div class="col-4 sun-col hidden">
+                <img src="./media/sun.png" alt="" id="sun">
+            </div>
+        </div>
+    </div>
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="liveToast" class="toast" data-bs-autohide="false" role="alert" aria-live="assertive"
+            aria-atomic="true">
+            <div class="toast-header">
+                <img src="./media/Clay Logo.png" class="rounded me-2 profile" alt="...">
+                <strong class="me-auto">Clay Vander Kolk</strong>
+                <small>0 mins ago</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Hey, welcome to my portfolio page. I created this website to show my skillset and have a location to
+                put
+                all my
+                fun projects. Please reach out if you need anything!
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

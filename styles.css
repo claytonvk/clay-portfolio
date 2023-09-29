@@ -1,0 +1,340 @@
+@font-face {
+    font-family: Vangaurd-bold;
+    /* src: url(./media/fonts/BoomerTantrum.ttf); */
+    src: url(./media/fonts/Fontspring-DEMO-vanguardcf-bold.otf);
+  }
+
+@font-face {
+    font-family: Vangaurd-thin;
+    /* src: url(./media/fonts/BoomerTantrum.ttf); */
+    src: url(./media/fonts/Fontspring-DEMO-vanguardcf-light.otf);
+  }
+
+@font-face {
+    font-family: Vangaurd;
+    /* src: url(./media/fonts/BoomerTantrum.ttf); */
+    src: url(./media/fonts/Fontspring-DEMO-vanguardcf-medium.otf);
+}
+
+body{
+    margin: 0px;
+}
+
+/* .hero {
+
+} */
+
+.logo   {
+    width: 50px;
+    z-index: 999;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%); 
+    margin: 20px;
+    transition: 20s ease-in;
+}
+
+.hero-img {
+    background-image: url(./media/dark-imgs/img1.jpg);
+    height: 100vh;
+    display: flex;
+    background-attachment: scroll;
+    background-position: right;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    transition: 1s linear;
+}
+
+.gradient-mask {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 5%; /* Adjust the height of the fade as needed */
+    background: linear-gradient(to bottom, transparent 0%, white 100%);
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+}
+
+h1 {
+    font-size: 4rem;
+    letter-spacing: .1rem;
+    font-family: Vanguard-bold;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+h2 {
+    margin-top: -25px;
+    margin-left: 20px;
+    font-size: 6rem;
+    letter-spacing: .9rem;
+    font-family: Vanguard-bold;
+}
+
+h3 {
+    margin-top: -10px;
+    color: black;
+    font-size: 1rem;
+    letter-spacing: 1rem;
+    font-family: serif;
+}
+
+.title {
+    margin: 50px 0;
+    text-align: center;
+}
+
+.hero, .content {
+    transition: opacity 0.5s ease;
+}
+
+.navbar-nav li {
+    margin: 10px 40px;
+}
+
+.nav-item a {
+    text-decoration: none;
+    transition: linear 1s ease; /* Add a smooth transition effect */
+}
+
+.nav-item:hover a {
+    border-bottom: 2px solid #333; /* Add the underline on hover */
+}
+
+.waves {
+    background-image: url(./media/waves.jpg);
+    background-size: contain;
+    width: fit-content;
+    height: fit-content;
+    z-index: -99;
+    margin: 0 auto;
+
+}
+
+#window {
+    height: 600px;
+    z-index: 99;
+    
+}
+
+.hidden {
+    opacity: 0;
+    filter: blur(5px);
+    transition: all 3s;
+}
+
+.hidden-right {
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+.hidden-left {
+    transform: translateX(-100%);
+    opacity: 0;
+}
+
+.hidden-vertical {
+    transform: translateY(-175%);
+}
+  
+.show {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateX(0);
+    transform: translateY(0);
+}
+
+.text  {
+    text-align: center;
+    margin: 0 auto;
+    font-family: Vanguard-thin;
+    line-height: 2;
+}
+
+.second-row {
+    margin-top: 200px;
+}
+
+#sun {
+    display: block;
+    height: 30%;
+    opacity: 88%;
+    margin: auto; 
+}
+
+.sun-col {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#third-paragraph {
+    margin-top: 50px;
+}
+
+.blur{
+    filter: blur(8px);
+    transition: all 1s ease-in;
+}
+
+.clear{
+    filter: none;
+    transition: all 2s ease-in;
+}
+
+.toast {
+    display: block;
+    z-index: 100;
+}
+
+.profile {
+    height: 50px;
+}
+
+/* ABOUT STYLES*/
+.me {
+    width: 300px;
+    position: absolute;
+}
+
+.me-color {
+    z-index: 1;
+}
+
+.me-bw {
+    z-index: 2;
+    opacity: 1;
+    transition: 1s linear;
+}
+
+.me-bw:hover {
+    opacity: 0;
+}
+
+
+/* CONTACT STYLES */
+.video {
+    /* margin: 0 -50px;
+    padding: 0; */
+    position:fixed;
+    top: 30px;
+    left: -30px;
+    height: 110%;
+    z-index: -99;
+    filter: blur(4px);
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+.contact-text {
+    color: white;
+}
+
+.contact-text h3 {
+    color: white;
+}
+
+form {
+margin-left: 5%;
+}
+
+.form-content {
+    margin: 20px auto;
+    padding-right: 20px;
+}
+
+
+.card  {
+    margin-bottom: 100px;
+}
+
+
+.form-label {
+    font-size: 1.1rem;
+    font-family: Vanguard-thin;
+}
+
+.form-control {
+    border-color: #333;
+}
+
+/* Projects Styles*/
+
+.grid-holder {
+    margin: 0 auto 50px;
+    padding: 10px 0;
+    width: 90%;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+.col-lg-4 {
+    padding: 12px 12px;
+}
+
+.col-lg-4:nth-child(1), .col-lg-4:nth-child(2) {
+    border-right: 1px solid black;
+}
+
+.todolist-img {
+    width: 100%;
+    -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+    filter: grayscale(100%);
+    transition: 2s;
+    margin-bottom: 10px;
+}
+
+.todolist-img:hover {
+    -webkit-filter: grayscale(0%); /* Safari 6.0 - 9.0 */
+    filter: grayscale(0%);
+}
+
+.project-link {
+    text-decoration: none;
+    color: #333;
+    font-family: Vanguard-bold;
+}
+
+h4 {
+    font-family: Vangaurd;
+    font-size: 3rem;
+    text-align: center;
+}
+
+h5 {
+    font-family: serif;
+    font-size: 1rem;
+    color: #4d4c4c;
+}
+
+.project-description {
+    font-family: Vanguard;
+    font-size: 1rem;
+    color: black;
+}
+
+.tool-icon {
+    height: 20px;
+    margin: 0px 5px;
+}
+
+.tab {
+    margin-left: 20px;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+.resume {
+    color: #4d4c4c;
+}

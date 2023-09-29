@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"
+        defer></script>
+    <script src="../javascripts/projects.js" defer></script>
+    <!-- Option 1: Include in HTML -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+    <nav class="navbar sticky-top navbar-expand-lg bg-white mt-3">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="../index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="./projects.html">Projects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./about.html">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./contact.html">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="content container-fluid">
+        <div class="row title justify-content-center">
+            <div class="col">
+                <h1 class="english hidden hidden-vertical">CLAY VANDER KOLK</h1>
+                <h2 class="english hidden hidden-vertical">PROJECTS</h2>
+                <h3 class="hawaiin hidden hidden-vertical">Ku’ia kahele aka na’au ha’aha’a</h3>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="grid-holder">
+        <div class="row justify-content-center">
+            <div class="col-lg-4">
+                <a href="https://to-do-list-49vh.onrender.com" target="_blank">
+                    <h4>To Do List Project</h4>
+                </a>
+                <h5>Major Tools:
+                    <img src="../media/tool-icons/nodejs.png" alt="" class="tool-icon">
+                    <img src="../media/tool-icons/typescript.png" alt="" class="tool-icon">
+                </h5>
+                <h5>Description:</h5>
+                <p class="project-description">
+                    <span class="tab"></span>This project was built to demonstrate fluency in <b>TypeScript</b> using
+                    <b>Node.js</b>.
+                    Within this application,
+                    I used <b>npm</b> to use packages like express as well as <b>mongoose</b>. Because this project was
+                    built for
+                    my
+                    own personal, I decided to retract the mongoose code and use <b>localStorage</b> to have data
+                    persist.
+                    If
+                    this appoication was ever to be scaled, I would remove the <b>localStorage</b> (which I know is a
+                    hack
+                    of a
+                    method for data storage) and use a more efficient data system linke <b>MongoDB</b> or <b>MySQL</b>.
+                </p>
+                <a href="https://github.com/claytonvk/ToDoList" target="_blank" class="project-link"><i
+                        class="bi bi-github"></i>
+                    https://github.com/claytonvk/ToDoList</a>
+                <img src="../media/todolist.png" alt="" class="todolist-img">
+            </div>
+            <div class="col-lg-4">
+                <a href="https://github.com/claytonvk/Spearo-Spotter" target="_blank" class="project-link"><i
+                        class="bi bi-github"></i>
+                    https://github.com/claytonvk/Spearo-Spotter</a>
+                <img src="../media/spearospotter.png" alt="" class="todolist-img">
+                <h5>Description:</h5>
+                <p class="project-description">
+                    <span class="tab"></span> Spearo Spotter is an application I built following the Colt Steele Web
+                    developer bootcamp project "YelpCamp". It was built using <b>Node</b> with <b>npm</b> for packages
+                    like <b>joi,
+                        cloudinary, ejs, express, mongoose</b>, and more. This app demonstrates full CRUD capabilities
+                    along
+                    with authentication and authorization. It uses <b>MongoDB</b> to store spear fishing locations, user
+                    (login) information and reviews written for each location. This project has yet to be hosted or
+                    updated with assitional security measures. These will be the next phase of this project.
+                </p>
+                <h5>Major Tools:
+                    <img src="../media/tool-icons/nodejs.png" alt="" class="tool-icon">
+                    <img src="../media/tool-icons/mongodb.webp" alt="" class="tool-icon">
+                </h5>
+                <h4>Spearo Spotter</h4>
+            </div>
+            <div class="col-lg-4">
+                <a href="https://vkfilmandphoto.com/" target="_blank">
+                    <h4>VK Film and Photo Website</h4>
+                </a>
+                <h5>Major Tools:
+                    <img src="../media/tool-icons/htmlcssjs.png" alt="" class="tool-icon">
+                </h5>
+                <h5>Description:</h5>
+                <p class="project-description">
+                    <span class="tab"></span>This website was built for my wife's photography company as my first
+                    major
+                    build. The proccess of building a website taught me alot as I struggled through every step of
+                    the
+                    way. It not only got my hands dirty working with <b>HTML, CSS, JS</b>, and a tiny buit of
+                    <b>PHP</b>, but it also
+                    has been good to reflect on this project and realize how certain code structures, tools, and
+                    framworks can help me write more effective succinct code.
+                </p>
+                <a href="https://github.com/claytonvk/vkfilmandphoto" target="_blank" class="project-link">
+                    <i class="bi bi-github"></i>
+                    https://github.com/claytonvk/vkfilmandphoto</a>
+                <img src="../media/vkfilmandphoto.png" alt="" class="todolist-img">
+            </div>
+        </div>
+    </div>
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="liveToast" class="toast" data-bs-autohide="false" role="alert" aria-live="assertive"
+            aria-atomic="true">
+            <div class="toast-header">
+                <img src="../media/Clay Logo.png" class="rounded me-2 profile" alt="...">
+                <strong class="me-auto">Clay Vander Kolk</strong>
+                <small>0 mins ago</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Would you like to seee my resumè? <br>
+                Check it out: <a href="../media/Official Resume.pdf" target="_blank" class="resume"><span>My
+                        Resumè</span></a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
