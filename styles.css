@@ -132,16 +132,20 @@ h3 {
 
 .hidden-right {
     transform: translateX(100%);
+    -webkit-transform: translateX(100%);
     opacity: 0;
+    
 }
 
 .hidden-left {
     transform: translateX(-100%);
+    -webkit-transform: translateX(-100%);
     opacity: 0;
 }
 
 .hidden-vertical {
     transform: translateY(-175%);
+    -webkit-transform: translateY(-175%);
     opacity: 0;
 }
   
@@ -149,6 +153,7 @@ h3 {
     opacity: 1;
     filter: blur(0);
     transform: translateX(0) translateY(0);
+    -webkit-transform: translateX(0) translateY(0);
 }
 
 .text  {
