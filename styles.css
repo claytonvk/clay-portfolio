@@ -128,25 +128,28 @@ h3 {
     opacity: 0;
     filter: blur(5px);
     transition: all 3s;
+    will-change: transform, opacity, filter;
 }
 
 .hidden-right {
     transform: translateX(100%);
     -webkit-transform: translateX(100%);
     opacity: 0;
-    
+    will-change: transform, opacity, filter;
 }
 
 .hidden-left {
     transform: translateX(-100%);
     -webkit-transform: translateX(-100%);
     opacity: 0;
+    will-change: transform, opacity, filter;
 }
 
 .hidden-vertical {
     transform: translateY(-175%);
     -webkit-transform: translateY(-175%);
     opacity: 0;
+    will-change: transform, opacity, filter;
 }
   
 .show {
