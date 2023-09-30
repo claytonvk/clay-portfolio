@@ -78,21 +78,16 @@ document.addEventListener("DOMContentLoaded", function () {
     sun.style.transform = `rotate(${rotationAngle}deg)`;
   });
 
-  setTimeout(() => {
-    let observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("show");
-          console.log("SHOWING");
-        } else {
-          console.log("NOTSHOWING");
-        }
-      });
+  let observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("show");
+      }
     });
+  });
 
-    const hiddenElements = document.querySelectorAll(".hidden");
-    hiddenElements.forEach((el) => observer.observe(el));
-  }, 500);
+  const hiddenElements = document.querySelectorAll(".hidden");
+  hiddenElements.forEach((el) => observer.observe(el));
 
   let blurrer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
