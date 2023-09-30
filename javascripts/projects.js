@@ -1,15 +1,22 @@
 document.addEventListener("DOMContentLoaded", function () {
   // Your JavaScript code heresss
-  let observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("show");
-      }
-    });
-  });
 
-  const hiddenElements = document.querySelectorAll(".hidden");
-  hiddenElements.forEach((el) => observer.observe(el));
+  setTimeout(() => {
+    let observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("show");
+          console.log("SHOWING");
+          console.log("SHOWING");
+        } else {
+          console.log("NOTSHOWING");
+        }
+      });
+    });
+
+    const hiddenElements = document.querySelectorAll(".hidden");
+    hiddenElements.forEach((el) => observer.observe(el));
+  }, 500);
 
   function isAtTop() {
     const scrollY = window.scrollY;
