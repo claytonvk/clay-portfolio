@@ -1,11 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // Your JavaScript code here
+  // Your JavaScript code heresss
   let observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         entry.target.classList.add("show");
-      } else {
-        entry.target.classList.remove("show");
       }
     });
   });

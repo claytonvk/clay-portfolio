@@ -82,8 +82,6 @@ document.addEventListener("DOMContentLoaded", function () {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         entry.target.classList.add("show");
-      } else {
-        entry.target.classList.remove("show");
       }
     });
   });
@@ -96,8 +94,6 @@ document.addEventListener("DOMContentLoaded", function () {
       if (entry.isIntersecting) {
         console.log();
         entry.target.classList.add("clear");
-      } else {
-        entry.target.classList.remove("clear");
       }
     });
   });
