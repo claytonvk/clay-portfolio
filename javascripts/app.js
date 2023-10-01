@@ -78,6 +78,64 @@ document.addEventListener("DOMContentLoaded", function () {
     sun.style.transform = `rotate(${rotationAngle}deg)`;
   });
 
+  const p2 = document.getElementById("second-paragraph");
+  const p3 = document.getElementById("third-paragraph");
+  const line = document.querySelector(".line");
+
+  function lineHeight() {
+    line.style.height = `${
+      (p3.getBoundingClientRect().bottom - sun.getBoundingClientRect().bottom) /
+      2
+    }px`;
+  }
+
+  lineHeight();
+  addEventListener("resize", lineHeight);
+
+  // const threshold = [];
+  // for (let i = 1; i <= 100; i += 10) {
+  //   threshold.push(i / 100);
+  // }
+
+  // let lineAnimator = new IntersectionObserver(
+  //   (entry) => {
+  //     let percentage = Math.floor((1 - entry[0].intersectionRatio) * 100);
+  //     lineAnimate.style.height = `${percentage}%`;
+  //     console.log(`${percentage}%`);
+  //   },
+  //   {
+  //     threshold: threshold,
+  //     rootMargin: "-50px",
+  //   }
+  // );
+
+  // const lineContainer = document.querySelectorAll(".line-container");
+  // const lineAnimate = document.querySelector(".line-animate");
+  // lineContainer.forEach((el) => lineAnimator.observe(el));
+
+  const lineContainer = document.querySelector(".line-container");
+  const lineAnimate = document.querySelector(".line-animate");
+
+  window.addEventListener("scroll", () => {
+    // Calculate the percentage of the element's visibility in the viewport
+    const elementTop = lineContainer.getBoundingClientRect().top;
+    const elementHeight = lineContainer.clientHeight;
+    const viewportHeight = window.innerHeight;
+
+    const percentage = Math.max(
+      0,
+      Math.min(
+        100,
+        (1 - (viewportHeight - elementTop - 100) / elementHeight) * 100
+      )
+    );
+
+    // Set the height of lineAnimate based on the percentage of visibility
+    lineAnimate.style.height = `${percentage}%`;
+
+    console.log(`${percentage}%`);
+  });
+
   let observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
