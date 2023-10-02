@@ -16,6 +16,10 @@
     src: url(./media/fonts/Fontspring-DEMO-vanguardcf-medium.otf);
 }
 
+html {
+    font-size: 100%;
+}
+
 body{
     margin: 0px;
 }
@@ -37,10 +41,11 @@ body{
 
 .hero-img {
     background-image: url(./media/dark-imgs/img1.jpg);
+    width: 100vw;
     height: 100vh;
     display: flex;
     background-attachment: scroll;
-    background-position: right;
+    background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
     position: relative;
@@ -86,6 +91,11 @@ h3 {
     font-family: serif;
 }
 
+.intro  {
+    display: flex;
+    justify-content: space-evenly;
+}
+
 .title {
     margin: 50px 0;
     text-align: center;
@@ -110,16 +120,17 @@ h3 {
 
 .waves {
     background-image: url(./media/waves.jpg);
-    background-size: contain;
-    width: fit-content;
-    height: fit-content;
+    background-size: 100%;
+    width: 100%;
+    height: 100%;
     z-index: -99;
     margin: 0 auto;
 
 }
 
 #window {
-    height: 600px;
+    width: 100%;
+    height: 100%;
     z-index: 99;
     
 }
@@ -161,13 +172,15 @@ h3 {
 
 .text  {
     text-align: center;
-    margin: 0 auto;
+    /* margin: 0 auto; */
     font-family: Vanguard-thin;
     line-height: 2;
 }
 
 .second-row {
-    margin-top: 200px;
+    margin-top: 100px;
+    justify-content: space-evenly;
+
 }
 
 #sun {
@@ -235,7 +248,7 @@ h3 {
 /* ABOUT STYLES*/
 .me {
     width: 100%;
-    margin: 0 auto;
+    margin: 0 auto 10px;
     -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
     filter: grayscale(100%);
     transition: 1s linear;
@@ -255,7 +268,7 @@ h3 {
 
 .about-text {
     text-align: start;
-    margin: 0 auto;
+    margin: 0 auto 10px;
     font-family: Vanguard-thin;
     line-height: 2;
     font-size: .95rem;
@@ -264,7 +277,7 @@ h3 {
 .row-about {
     display: flex;
     justify-content: space-evenly;
-    margin: 20px;
+    margin: 0 20px;
 }
 
 .skills {
@@ -338,11 +351,11 @@ margin-left: 5%;
     border-bottom: 1px solid black;
 }
 
-.col-lg-4 {
+.proj-col {
     padding: 12px 12px;
 }
 
-.col-lg-4:nth-child(1), .col-lg-4:nth-child(2) {
+.proj-col:nth-child(1), .proj-col:nth-child(2) {
     border-right: 1px solid black;
 }
 
@@ -401,3 +414,169 @@ a {
 .resume {
     color: #4d4c4c;
 }
+
+@media (max-width: 599px) {
+    html {
+        font-size: 50%;
+    }
+    .english, .hawaiin {
+        margin: 0;
+    }
+    .proj-col:nth-child(1), .proj-col:nth-child(2) {
+        border-right: none;
+        border-bottom: 1px solid black;
+    }
+    .proj-col:nth-child(2){
+        display: flex;
+        flex-direction: column;
+    }
+
+    #rearrange h4 {
+        order: 1;
+    }
+
+    #rearrange .project-tools {
+        order: 2;
+    }
+
+    #rearrange p {
+        order: 3;
+    }
+
+    #rearrange .description {
+        order: 4;
+    }
+
+    #rearrange img {
+        order: 5;
+    }
+
+    #rearrange .project-link {
+        order: 6;
+    }
+
+    .row-about {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+    }
+
+    .skills {
+        display: none;
+    }
+
+    iframe {
+        width: 100%;
+    }
+
+    .me {
+        display: flex;
+  }
+}
+  
+
+@media (min-width: 600px) and (max-width: 767px) {
+    html {
+        font-size: 67%;
+    }
+    .english, .hawaiin {
+        margin: 0;
+    }
+    .proj-col:nth-child(1), .proj-col:nth-child(2) {
+        border-right: none;
+        border-bottom: 1px solid black;
+    }
+
+    .proj-col:nth-child(2){
+        display: flex;
+        flex-direction: column;
+    }
+
+    #rearrange h4 {
+        order: 1;
+    }
+
+    #rearrange .project-tools {
+        order: 2;
+    }
+
+    #rearrange p {
+        order: 3;
+    }
+
+    #rearrange .description {
+        order: 4;
+    }
+
+    #rearrange img {
+        order: 5;
+    }
+
+    #rearrange .project-link {
+        order: 6;
+    }
+
+    .skills {
+        display: none;
+    }
+    iframe {
+        width: 100%;
+    }
+
+    .me {
+        display: flex;
+  }
+
+  }
+
+ 
+  
+  /* Styles for large smartphones and small tablets */
+  @media (min-width: 768px) and (max-width: 991px) {
+    html {
+        font-size: 84%;
+    }
+    .proj-col:nth-child(1), .proj-col:nth-child(2) {
+        border-right: none;
+        border-bottom: 1px solid black;
+    }
+    .proj-col:nth-child(2){
+        display: flex;
+        flex-direction: column;
+    }
+
+    #rearrange h4 {
+        order: 1;
+    }
+
+    #rearrange .project-tools {
+        order: 2;
+    }
+
+    #rearrange p {
+        order: 3;
+    }
+
+    #rearrange .description {
+        order: 4;
+    }
+
+    #rearrange img {
+        order: 5;
+    }
+
+    #rearrange .project-link {
+        order: 6;
+    }
+    .skills {
+        display: none;
+    }
+    iframe {
+        width: 100%;
+    }
+
+    .me {
+        display: flex;
+  }
+  }
+  
