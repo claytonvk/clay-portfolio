@@ -44,7 +44,7 @@ body{
 .hero-img {
     background-image: url(./media/dark-imgs/img1.jpg);
     width: 100vw;
-    height: 90vh;
+    height: 100vh;
     display: flex;
     background-attachment: scroll;
     background-position: center;
@@ -508,7 +508,7 @@ a {
 
     .hero, .hero-img {
     width: 100vw;
-    height: 90vh;
+    height: 50vh;
     }
 }
   
