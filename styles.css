@@ -420,13 +420,16 @@ a {
     html {
         font-size: 50%;
     }
+
     .english, .hawaiin {
         margin: 0;
     }
+
     .proj-col:nth-child(1), .proj-col:nth-child(2) {
         border-right: none;
         border-bottom: 1px solid black;
     }
+
     .proj-col:nth-child(2){
         display: flex;
         flex-direction: column;
@@ -472,7 +475,40 @@ a {
 
     .me {
         display: flex;
-  }
+    }
+
+    .hidden {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateX(0) translateY(0);
+    -webkit-transform: translateX(0) translateY(0);
+    }
+
+    .hidden-right {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateX(0) translateY(0);
+    -webkit-transform: translateX(0) translateY(0);
+    }
+
+    .hidden-left {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateX(0) translateY(0);
+    -webkit-transform: translateX(0) translateY(0);
+    }
+
+    .hidden-vertical {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateX(0) translateY(0);
+    -webkit-transform: translateX(0) translateY(0);
+    }
+
+    .hero, .hero-img {
+    width: 100vw;
+    height: 90vh;
+    }
 }
   
 
@@ -528,12 +564,12 @@ a {
         display: flex;
   }
 
-  }
+}
 
  
   
   /* Styles for large smartphones and small tablets */
-  @media (min-width: 768px) and (max-width: 991px) {
+@media (min-width: 768px) and (max-width: 991px) {
     html {
         font-size: 84%;
     }
@@ -579,5 +615,5 @@ a {
     .me {
         display: flex;
     }
-  }
+}
   
