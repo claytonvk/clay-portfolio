@@ -24,9 +24,10 @@ body{
     margin: 0px;
 }
 
-/* .hero {
-
-} */
+.hero {
+    width: 100vw;
+    height: 100vh;
+}
 
 .logo   {
     width: 50px;
@@ -577,6 +578,6 @@ a {
 
     .me {
         display: flex;
-  }
+    }
   }
   
