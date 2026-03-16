@@ -28,7 +28,12 @@ interface Stroke {
 
 export default function Hero() {
   const [mouse, setMouse] = useState({ x: 50, y: 50 });
+  const [isTouch, setIsTouch] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    setIsTouch(window.matchMedia("(pointer: coarse)").matches);
+  }, []);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const isDrawing = useRef(false);
   const strokes = useRef<Stroke[]>([]);
@@ -145,13 +150,10 @@ export default function Hero() {
   return (
     <section
       ref={sectionRef}
-      onMouseMove={draw}
-      onMouseDown={startDraw}
-      onMouseUp={stopDraw}
-      onMouseLeave={stopDraw}
-      onTouchStart={startDraw}
-      onTouchMove={draw}
-      onTouchEnd={stopDraw}
+      onMouseMove={isTouch ? undefined : draw}
+      onMouseDown={isTouch ? undefined : startDraw}
+      onMouseUp={isTouch ? undefined : stopDraw}
+      onMouseLeave={isTouch ? undefined : stopDraw}
       className="relative w-full min-h-screen bg-ink overflow-hidden flex flex-col justify-between select-none"
     >
       {/* Subtle grid pattern */}
@@ -173,13 +175,15 @@ export default function Hero() {
         className="absolute inset-0 w-full h-full pointer-events-none z-[2]"
       />
 
-      {/* Cursor glow */}
-      <div
-        className="absolute inset-0 pointer-events-none transition-[background] duration-300 ease-out"
-        style={{
-          background: `radial-gradient(400px circle at ${mouse.x}% ${mouse.y}%, rgba(200,169,110,0.06), transparent 70%)`,
-        }}
-      />
+      {/* Cursor glow — desktop only */}
+      {!isTouch && (
+        <div
+          className="absolute inset-0 pointer-events-none transition-[background] duration-300 ease-out"
+          style={{
+            background: `radial-gradient(400px circle at ${mouse.x}% ${mouse.y}%, rgba(200,169,110,0.06), transparent 70%)`,
+          }}
+        />
+      )}
 
       {/* Main content */}
       <motion.div
