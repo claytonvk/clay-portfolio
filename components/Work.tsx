@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 
 interface Project {
   id: string;
@@ -111,18 +111,9 @@ const projects: Project[] = [
   },
 ];
 
-function ProjectCard({ project, index }: { project: Project; index: number }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
-
+function ProjectCard({ project }: { project: Project }) {
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.7, delay: index * 0.1, ease: [0.25, 0.1, 0.25, 1] }}
-      className="group relative flex flex-col overflow-hidden border border-black/8 hover:border-black/16 transition-all duration-500 hover:shadow-xl hover:-translate-y-1"
-    >
+    <div className="group relative flex flex-col overflow-hidden border border-black/8 hover:border-black/16 transition-all duration-500 hover:shadow-xl hover:-translate-y-1 h-full">
       {/* Screenshot header */}
       <div className="relative h-52 overflow-hidden bg-[#111]">
         <Image
@@ -210,13 +201,50 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           )}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
 export default function Work() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const [cardsPerView, setCardsPerView] = useState(2);
+  const [direction, setDirection] = useState(1);
+
+  useEffect(() => {
+    const update = () => setCardsPerView(window.innerWidth >= 768 ? 2 : 1);
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  const pages: Project[][] = [];
+  for (let i = 0; i < projects.length; i += cardsPerView) {
+    pages.push(projects.slice(i, i + cardsPerView));
+  }
+  const totalPages = pages.length;
+
+  const goNext = () => {
+    if (currentPage < totalPages - 1) {
+      setDirection(1);
+      setCurrentPage((p) => p + 1);
+    }
+  };
+
+  const goPrev = () => {
+    if (currentPage > 0) {
+      setDirection(-1);
+      setCurrentPage((p) => p - 1);
+    }
+  };
+
+  const variants = {
+    enter: (dir: number) => ({ x: dir > 0 ? "100%" : "-100%", opacity: 0 }),
+    center: { x: 0, opacity: 1 },
+    exit: (dir: number) => ({ x: dir > 0 ? "-100%" : "100%", opacity: 0 }),
+  };
 
   return (
     <section id="work" className="bg-cream py-32 px-6 md:px-10 lg:px-16">
@@ -238,17 +266,71 @@ export default function Work() {
               Things I&apos;ve Built
             </h2>
           </div>
-          <p className="text-sm text-muted font-sans max-w-xs text-right leading-relaxed hidden sm:block">
-            From production platforms to contract work —
-            <br />
-            real products, real users.
-          </p>
+          <div className="flex flex-col sm:items-end gap-4">
+            <p className="text-sm text-muted font-sans max-w-xs text-right leading-relaxed hidden sm:block">
+              From production platforms to contract work —
+              <br />
+              real products, real users.
+            </p>
+            {/* Arrow controls */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={goPrev}
+                disabled={currentPage === 0}
+                className="w-10 h-10 flex items-center justify-center border border-black/10 text-ink/60 hover:text-ink hover:border-black/25 transition-all disabled:opacity-25 disabled:cursor-not-allowed"
+                aria-label="Previous projects"
+              >
+                ←
+              </button>
+              <span className="text-xs font-sans text-muted tabular-nums w-12 text-center">
+                {currentPage + 1} / {totalPages}
+              </span>
+              <button
+                onClick={goNext}
+                disabled={currentPage === totalPages - 1}
+                className="w-10 h-10 flex items-center justify-center border border-black/10 text-ink/60 hover:text-ink hover:border-black/25 transition-all disabled:opacity-25 disabled:cursor-not-allowed"
+                aria-label="Next projects"
+              >
+                →
+              </button>
+            </div>
+          </div>
         </motion.div>
 
-        {/* Projects grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {projects.map((project, i) => (
-            <ProjectCard key={project.id} project={project} index={i} />
+        {/* Carousel */}
+        <div className="relative overflow-hidden">
+          <AnimatePresence initial={false} custom={direction} mode="wait">
+            <motion.div
+              key={currentPage}
+              custom={direction}
+              variants={variants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+              className="grid grid-cols-1 md:grid-cols-2 gap-6"
+            >
+              {pages[currentPage]?.map((project) => (
+                <ProjectCard key={project.id} project={project} />
+              ))}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        {/* Dot indicators */}
+        <div className="flex items-center justify-center gap-2 mt-10">
+          {Array.from({ length: totalPages }).map((_, i) => (
+            <button
+              key={i}
+              onClick={() => {
+                setDirection(i > currentPage ? 1 : -1);
+                setCurrentPage(i);
+              }}
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                i === currentPage ? "w-6 bg-ink" : "w-1.5 bg-ink/20 hover:bg-ink/40"
+              }`}
+              aria-label={`Go to page ${i + 1}`}
+            />
           ))}
         </div>
       </div>
