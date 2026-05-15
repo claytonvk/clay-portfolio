@@ -70,6 +70,45 @@ const projects: Project[] = [
     accentColor: "#d4bc8a",
     role: "Contract · VK Creative Co",
   },
+  {
+    id: "island-style-surf-school",
+    title: "Island Style Surf School",
+    subtitle: "Surf Lesson Booking & Operations Platform",
+    description:
+      "Full-stack site for a North Shore Oahu surf school. Online lesson booking, digital waiver signing, Stripe payments, password-protected client photo galleries with ZIP download, and a content-managed admin dashboard for packages, availability, testimonials, and gallery analytics.",
+    tech: ["Next.js", "TypeScript", "Supabase", "Tailwind CSS", "Stripe", "Resend"],
+    liveUrl: "https://www.islandstylesurfschool.com",
+    githubUrl: null,
+    image: "/images/projects/island-style-surf-school.png",
+    accentColor: "#4a8a6f",
+    role: "Contract · VK Creative Co",
+  },
+  {
+    id: "island-style-surf-stay",
+    title: "Island Style Surf Stay",
+    subtitle: "Surf Bungalow Booking Site",
+    description:
+      "Marketing and inquiry site for private surf bungalows in Haleiwa on Oahu's North Shore. Gallery-driven bungalow listings, SEO landing pages for Oahu vacation rentals and surf camps, LodgingBusiness structured data, and contact forms feeding directly into the Island Style admin panel.",
+    tech: ["Next.js", "Supabase", "Styled Components", "Resend"],
+    liveUrl: "https://www.surfstays.islandstylesurfschool.com",
+    githubUrl: null,
+    image: "/images/projects/island-style-surf-stay.png",
+    accentColor: "#4a7fa8",
+    role: "Contract · VK Creative Co",
+  },
+  {
+    id: "covaclean",
+    title: "Covaclean",
+    subtitle: "Eco-Friendly Cleaning Services",
+    description:
+      "Marketing site for a coastal San Diego cleaning company specializing in carpet, tile, grout, upholstery, and move-out cleaning. Dynamic service-area pages for local SEO, quote request forms, LocalBusiness structured data, and Vercel Analytics.",
+    tech: ["Next.js", "TypeScript", "Tailwind CSS", "shadcn/ui"],
+    liveUrl: "https://covaclean.com",
+    githubUrl: null,
+    image: "/images/projects/covaclean.png",
+    accentColor: "#6aab9e",
+    role: "Contract · VK Creative Co",
+  },
 ];
 
 function ProjectCard({ project, index }: { project: Project; index: number }) {
