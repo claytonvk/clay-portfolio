@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Inter, Big_Shoulders_Display } from "next/font/google";
+import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
 const inter = Inter({
@@ -8,10 +9,20 @@ const inter = Inter({
   display: "swap",
 });
 
-const bigShoulders = Big_Shoulders_Display({
-  subsets: ["latin"],
+const vanguard = localFont({
+  src: [
+    {
+      path: "../public/fonts/Fontspring-DEMO-vanguardcf-bold.otf",
+      weight: "700",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/Fontspring-DEMO-vanguardcf-medium.otf",
+      weight: "800",
+      style: "normal",
+    },
+  ],
   variable: "--font-display",
-  weight: ["700", "800", "900"],
   display: "swap",
 });
 
@@ -50,7 +61,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className={`${inter.variable} ${bigShoulders.variable}`}>{children}</body>
+      <body className={`${inter.variable} ${vanguard.variable}`}>{children}</body>
     </html>
   );
 }
