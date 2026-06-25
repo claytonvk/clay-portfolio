@@ -363,7 +363,7 @@ export default function SiteDetail({
       )}
 
       {/* Tabs */}
-      <div className="flex gap-1 overflow-x-auto border-b border-ink/10 mb-6">
+      <div className="scrollbar-none flex gap-1 overflow-x-auto border-b border-ink/10 mb-6">
         {TABS.map(({ key, label, icon: Icon }) => (
           <button
             key={key}

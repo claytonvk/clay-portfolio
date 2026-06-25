@@ -50,6 +50,15 @@ body {
   border-radius: 3px;
 }
 
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 /* Section label style */
 .section-label {
   @apply text-xs tracking-widest2 uppercase text-muted font-sans font-medium;
