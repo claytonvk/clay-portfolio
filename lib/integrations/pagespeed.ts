@@ -13,6 +13,10 @@ interface PSAudit {
   numericValue?: number;
 }
 interface PSResponse {
+  error?: {
+    message?: string;
+    status?: string;
+  };
   lighthouseResult?: {
     categories?: {
       performance?: PSCategory;
@@ -27,12 +31,8 @@ interface PSResponse {
 const pct = (s: number | null | undefined) =>
   s == null ? null : Math.round(s * 100);
 
-// Runs Lighthouse via the PageSpeed Insights API (mobile strategy).
-export async function getLighthouse(
-  url: string
-): Promise<LighthouseScores> {
-  const fetchedAt = new Date().toISOString();
-  const empty: LighthouseScores = {
+function emptyResult(fetchedAt: string, error?: string): LighthouseScores {
+  return {
     performance: null,
     seo: null,
     accessibility: null,
@@ -41,8 +41,16 @@ export async function getLighthouse(
     cls: null,
     tbt: null,
     fetchedAt,
+    error,
   };
-  if (!env.pagespeedKey || !url) return empty;
+}
+
+// Runs Lighthouse via the PageSpeed Insights API (mobile strategy).
+export async function getLighthouse(
+  url: string
+): Promise<LighthouseScores | null> {
+  const fetchedAt = new Date().toISOString();
+  if (!env.pagespeedKey || !url) return null;
 
   const qs = new URLSearchParams({
     url,
@@ -53,16 +61,35 @@ export async function getLighthouse(
     qs.append("category", c)
   );
 
-  const res = await fetch(
-    `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?${qs}`,
-    { cache: "no-store" }
-  );
-  if (!res.ok) return empty;
+  let res: Response;
+  let data: PSResponse | null = null;
+  try {
+    res = await fetch(
+      `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?${qs}`,
+      { cache: "no-store" }
+    );
+    data = (await res.json()) as PSResponse;
+  } catch (error) {
+    return emptyResult(
+      fetchedAt,
+      error instanceof Error
+        ? `PageSpeed request failed: ${error.message}`
+        : "PageSpeed request failed."
+    );
+  }
 
-  const data = (await res.json()) as PSResponse;
+  if (!res.ok) {
+    return emptyResult(
+      fetchedAt,
+      data?.error?.message
+        ? `PageSpeed API error: ${data.error.message}`
+        : `PageSpeed API returned HTTP ${res.status}.`
+    );
+  }
+
   const cats = data.lighthouseResult?.categories;
   const audits = data.lighthouseResult?.audits ?? {};
-  return {
+  const scores: LighthouseScores = {
     performance: pct(cats?.performance?.score),
     seo: pct(cats?.seo?.score),
     accessibility: pct(cats?.accessibility?.score),
@@ -72,4 +99,19 @@ export async function getLighthouse(
     tbt: audits["total-blocking-time"]?.numericValue ?? null,
     fetchedAt,
   };
+  const hasData = [
+    scores.performance,
+    scores.seo,
+    scores.accessibility,
+    scores.bestPractices,
+    scores.lcp,
+    scores.cls,
+    scores.tbt,
+  ].some((value) => value != null);
+  return hasData
+    ? scores
+    : emptyResult(
+        fetchedAt,
+        "PageSpeed returned no Lighthouse metrics for this URL."
+      );
 }

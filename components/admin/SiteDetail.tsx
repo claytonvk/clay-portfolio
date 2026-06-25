@@ -57,6 +57,21 @@ function scoreDrivers(audit: Audit) {
   if (!audit.lighthouse) {
     items.push("Lighthouse data is unknown; do not treat this as a failed score.");
   } else {
+    const hasMetrics = [
+      audit.lighthouse.performance,
+      audit.lighthouse.seo,
+      audit.lighthouse.accessibility,
+      audit.lighthouse.bestPractices,
+      audit.lighthouse.lcp,
+      audit.lighthouse.cls,
+      audit.lighthouse.tbt,
+    ].some((value) => value != null);
+    if (!hasMetrics) {
+      items.push(
+        audit.lighthouse.error ??
+          "Lighthouse data is unknown; PageSpeed returned no metrics."
+      );
+    }
     if ((audit.lighthouse.performance ?? 100) < 80) {
       items.push(`Performance score is ${audit.lighthouse.performance}.`);
     }
@@ -510,6 +525,25 @@ function PerformanceTab({ latest }: { latest: Audit | null }) {
     return (
       <Empty text="Performance is unknown because no Lighthouse data has been captured yet. Add a PageSpeed key or run Lighthouse externally; this is not scored as a failure." />
     );
+  const hasMetrics = [
+    lh.performance,
+    lh.seo,
+    lh.accessibility,
+    lh.bestPractices,
+    lh.lcp,
+    lh.cls,
+    lh.tbt,
+  ].some((value) => value != null);
+  if (!hasMetrics) {
+    return (
+      <Empty
+        text={
+          lh.error ??
+          "Performance is unknown because PageSpeed did not return Lighthouse metrics for this audit."
+        }
+      />
+    );
+  }
   return (
     <div className="space-y-6">
       <Card>

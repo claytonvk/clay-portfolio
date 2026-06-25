@@ -32,6 +32,7 @@ export interface LighthouseScores {
   cls: number | null;
   tbt: number | null; // ms
   fetchedAt: string;
+  error?: string;
 }
 
 export interface OutdatedDep {
