@@ -37,6 +37,13 @@ export default function Footer() {
           >
             Resume
           </a>
+          <a
+            href="/admin"
+            className="text-xs font-sans text-white/20 hover:text-white/50 transition-colors"
+            aria-label="Admin dashboard"
+          >
+            Admin
+          </a>
         </div>
 
         <p className="text-xs font-sans text-white/20">
