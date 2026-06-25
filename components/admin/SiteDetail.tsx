@@ -208,7 +208,7 @@ export default function SiteDetail({
 }) {
   const router = useRouter();
   const [tab, setTab] = useState<TabKey>("overview");
-  const [running, setRunning] = useState(false);
+  const [running, setRunning] = useState<"reload" | "full" | null>(null);
   const [editing, setEditing] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
@@ -217,12 +217,15 @@ export default function SiteDetail({
   // the latest run was rate-limited).
   const lastSummaryAudit = audits.find((x) => x.summary) ?? null;
 
-  async function runAudit() {
-    setRunning(true);
+  async function runAudit(includeAi: boolean) {
+    const mode = includeAi ? "full" : "reload";
+    setRunning(mode);
     setErr(null);
     try {
       const res = await fetch(`/api/admin/sites/${site.id}/audit`, {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ includeAi }),
       });
       const data = await res.json();
       if (!res.ok) setErr(data.error || "Audit failed");
@@ -230,7 +233,7 @@ export default function SiteDetail({
     } catch {
       setErr("Audit failed");
     } finally {
-      setRunning(false);
+      setRunning(null);
     }
   }
 
@@ -301,16 +304,28 @@ export default function SiteDetail({
             Edit
           </button>
           <button
-            onClick={runAudit}
-            disabled={running}
-            className="inline-flex items-center gap-2 rounded-lg bg-ink text-cream px-4 py-2.5 text-sm font-medium hover:bg-ink/90 transition disabled:opacity-60"
+            onClick={() => runAudit(false)}
+            disabled={running !== null}
+            className="inline-flex items-center gap-2 rounded-lg border border-ink/15 bg-white px-4 py-2.5 text-sm font-medium hover:bg-ink/[0.04] transition disabled:opacity-60"
           >
-            {running ? (
+            {running === "reload" ? (
               <Loader2 size={16} className="animate-spin" />
             ) : (
               <RefreshCw size={16} />
             )}
-            {running ? "Auditing…" : "Run audit now"}
+            {running === "reload" ? "Reloading…" : "Reload info"}
+          </button>
+          <button
+            onClick={() => runAudit(true)}
+            disabled={running !== null}
+            className="inline-flex items-center gap-2 rounded-lg bg-ink text-cream px-4 py-2.5 text-sm font-medium hover:bg-ink/90 transition disabled:opacity-60"
+          >
+            {running === "full" ? (
+              <Loader2 size={16} className="animate-spin" />
+            ) : (
+              <Sparkles size={16} />
+            )}
+            {running === "full" ? "Auditing…" : "Run full audit"}
           </button>
         </div>
       </div>
@@ -326,8 +341,9 @@ export default function SiteDetail({
       )}
       {!latest && (
         <div className="mb-6 rounded-xl border border-accent/30 bg-accent/10 px-4 py-3 text-sm text-accent-dark">
-          No audit yet. Click <strong>Run audit now</strong> to gather health,
-          performance, and dependency data.
+          No audit yet. Click <strong>Reload info</strong> to gather health,
+          performance, and dependency data, or <strong>Run full audit</strong>{" "}
+          to include AI recommendations.
         </div>
       )}
 

@@ -225,8 +225,10 @@ export interface RunAuditResult {
 export async function runAudit(
   supabase: SupabaseClient,
   site: Site,
-  source: "manual" | "cron"
+  source: "manual" | "cron",
+  options: { includeAi?: boolean } = {}
 ): Promise<RunAuditResult> {
+  const includeAi = options.includeAi ?? true;
   // 1. Vercel
   let vercel: VercelReport | null = null;
   if (site.vercel_project_id && vercelConfigured()) {
@@ -287,15 +289,17 @@ export async function runAudit(
     vercel?.latestDeployment?.state === "ERROR";
 
   // 4. AI narrative (optional)
-  const narrative = await generateNarrative({
-    siteName: site.name,
-    productionUrl: site.production_url,
-    healthScore,
-    lighthouse,
-    deps,
-    vulnerabilities,
-    vercel,
-  });
+  const narrative = includeAi
+    ? await generateNarrative({
+        siteName: site.name,
+        productionUrl: site.production_url,
+        healthScore,
+        lighthouse,
+        deps,
+        vulnerabilities,
+        vercel,
+      })
+    : null;
 
   // 5. Persist
   const row = {

@@ -4,8 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Zap } from "lucide-react";
 
-// Audits every site by firing the per-site endpoint with limited concurrency
-// from the browser — avoids serverless timeouts and shows live progress.
+// Reloads every site's non-AI audit data with limited concurrency from the
+// browser — avoids serverless timeouts and preserves AI quota for full audits.
 export default function AuditAllButton({ siteIds }: { siteIds: string[] }) {
   const router = useRouter();
   const [running, setRunning] = useState(false);
@@ -28,6 +28,8 @@ export default function AuditAllButton({ siteIds }: { siteIds: string[] }) {
         try {
           const res = await fetch(`/api/admin/sites/${id}/audit`, {
             method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ includeAi: false }),
           });
           if (!res.ok) failed++;
         } catch {
@@ -45,7 +47,7 @@ export default function AuditAllButton({ siteIds }: { siteIds: string[] }) {
 
     setRunning(false);
     setMsg(
-      failed ? `Done — ${failed} failed` : `Audited ${completed} site${completed > 1 ? "s" : ""}`
+      failed ? `Done — ${failed} failed` : `Reloaded ${completed} site${completed > 1 ? "s" : ""}`
     );
     router.refresh();
     setTimeout(() => setMsg(null), 6000);
@@ -64,7 +66,7 @@ export default function AuditAllButton({ siteIds }: { siteIds: string[] }) {
         ) : (
           <Zap size={16} />
         )}
-        {running ? `Auditing ${done}/${siteIds.length}…` : "Audit all"}
+        {running ? `Reloading ${done}/${siteIds.length}…` : "Reload all"}
       </button>
     </div>
   );

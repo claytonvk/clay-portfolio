@@ -7,7 +7,7 @@ import { runAudit } from "@/lib/audit/run-audit";
 export const maxDuration = 120;
 
 export async function POST(
-  _req: Request,
+  req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { response } = await requireUser();
@@ -20,7 +20,14 @@ export async function POST(
   try {
     const site = await getSite(id);
     if (!site) return jsonError("Site not found", 404);
-    const result = await runAudit(supabase, site, "manual");
+    let includeAi = true;
+    try {
+      const body = (await req.json()) as { includeAi?: boolean };
+      includeAi = body.includeAi ?? true;
+    } catch {
+      includeAi = true;
+    }
+    const result = await runAudit(supabase, site, "manual", { includeAi });
     return NextResponse.json({ audit: result.audit });
   } catch (e) {
     return jsonError(e instanceof Error ? e.message : "Audit failed");
