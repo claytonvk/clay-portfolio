@@ -55,7 +55,8 @@ function buildPrompt(input: NarrativeInput): string {
       cls: input.lighthouse.cls,
     },
     deployment: input.vercel?.latestDeployment?.state ?? "unknown",
-    recentBuildErrors: input.vercel?.recentErrors ?? 0,
+    unresolvedBuildErrorsSinceLatestReadyProduction:
+      input.vercel?.recentErrors ?? 0,
     dependencyHealth: input.deps?.health && {
       securityRisk: input.deps.health.securityRisk,
       maintenanceDebt: input.deps.health.maintenanceDebt,
@@ -90,7 +91,7 @@ Respond with JSON matching exactly this shape:
   ]
 }
 
-Rules: 3-6 recommendations, ordered most important first. Prioritize unresolved critical/high advisories with available patch and broken deployments as high. Moderate framework advisories tied to unused features should be lower priority. Treat major version bumps without active advisories as maintenance debt, not security risk. If lighthouseStatus is "unknown", treat performance as missing/unknown data, not a poor score or major negative; at most recommend connecting PageSpeed Insights or running Lighthouse as a low-priority measurement task. If dependencyHealth.auditClean and productionBuildPassing are true, explicitly reassure that the security posture has recovered even if non-security major upgrades remain. Be specific (name packages/scores). If everything is healthy, say so and keep recommendations light.`;
+Rules: 3-6 recommendations, ordered most important first. Prioritize unresolved critical/high advisories with available patch and the latest production deployment being broken as high. Do not call the production build failing when deployment is READY and unresolvedBuildErrorsSinceLatestReadyProduction is 0, even if older failed deployments exist in history. Moderate framework advisories tied to unused features should be lower priority. Treat major version bumps without active advisories as maintenance debt, not security risk. If lighthouseStatus is "unknown", treat performance as missing/unknown data, not a poor score or major negative; at most recommend connecting PageSpeed Insights or running Lighthouse as a low-priority measurement task. If dependencyHealth.auditClean and productionBuildPassing are true, explicitly reassure that the security posture has recovered even if non-security major upgrades remain. Be specific (name packages/scores). If everything is healthy, say so and keep recommendations light.`;
 }
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));

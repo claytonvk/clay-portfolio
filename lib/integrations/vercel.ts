@@ -161,9 +161,13 @@ export async function getProjectReport(
     ]);
     const production = deployments.filter((d) => d.target === "production");
     const latestDeployment = production[0] ?? deployments[0] ?? null;
-    const recentErrors = deployments
-      .slice(0, 10)
-      .filter((d) => d.state === "ERROR").length;
+    const latestReadyProduction = production.find((d) => d.state === "READY");
+    const unresolvedDeployments = latestReadyProduction
+      ? deployments.filter((d) => d.createdAt > latestReadyProduction.createdAt)
+      : deployments;
+    const recentErrors = unresolvedDeployments.filter(
+      (d) => d.state === "ERROR"
+    ).length;
     return { latestDeployment, deployments, domains, recentErrors };
   } catch (e) {
     return {

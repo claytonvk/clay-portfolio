@@ -52,7 +52,9 @@ function scoreDrivers(audit: Audit) {
     items.push("Latest Vercel deployment is failing.");
   }
   if ((audit.vercel?.recentErrors ?? 0) > 0) {
-    items.push(`${audit.vercel?.recentErrors} recent Vercel build error(s).`);
+    items.push(
+      `${audit.vercel?.recentErrors} unresolved Vercel build error(s) after the latest successful production deploy.`
+    );
   }
   if (!audit.lighthouse) {
     items.push("Lighthouse data is unknown; do not treat this as a failed score.");
