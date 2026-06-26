@@ -15,6 +15,7 @@ export function geminiConfigured() {
 // Current-gen, available on the free tier. Override with GEMINI_MODEL if a
 // model's daily free quota is exhausted (quotas are per-model).
 const MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+const FALLBACK_MODEL = "gemini-2.5-flash-lite";
 
 export interface NarrativeInput {
   siteName: string;
@@ -144,37 +145,47 @@ export async function generateNarrative(
         responseMimeType: "application/json",
       },
     });
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${env.geminiKey}`;
 
-    // On a free-tier rate-limit / overload, wait the window Google reports
-    // (typically ~a minute) and retry once.
-    const MAX_ATTEMPTS = 2;
-    let res: Response | null = null;
-    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
-      res = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        cache: "no-store",
-        body,
-      });
-      if (res.status !== 429 && res.status !== 503) break;
-      if (attempt === MAX_ATTEMPTS) break;
-      await sleep(await retryWaitMs(res));
+    async function tryModel(model: string): Promise<Narrative | null> {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${env.geminiKey}`;
+
+      // On a free-tier rate-limit / overload, wait the window Google reports
+      // (typically ~a minute) and retry once before falling back.
+      const MAX_ATTEMPTS = 2;
+      let res: Response | null = null;
+      for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+        res = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          cache: "no-store",
+          body,
+        });
+        if (res.status !== 429 && res.status !== 503) break;
+        if (attempt === MAX_ATTEMPTS) break;
+        await sleep(await retryWaitMs(res));
+      }
+      if (!res || !res.ok) return null;
+      const data = (await res.json()) as {
+        candidates?: { content?: { parts?: { text?: string }[] } }[];
+      };
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!text) return null;
+      const parsed = safeParse(text);
+      if (!parsed) return null;
+      return {
+        summary: parsed.summary ?? "",
+        recommendations: Array.isArray(parsed.recommendations)
+          ? parsed.recommendations.slice(0, 8)
+          : [],
+      };
     }
-    if (!res || !res.ok) return null;
-    const data = (await res.json()) as {
-      candidates?: { content?: { parts?: { text?: string }[] } }[];
-    };
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!text) return null;
-    const parsed = safeParse(text);
-    if (!parsed) return null;
-    return {
-      summary: parsed.summary ?? "",
-      recommendations: Array.isArray(parsed.recommendations)
-        ? parsed.recommendations.slice(0, 8)
-        : [],
-    };
+
+    const models = Array.from(new Set([MODEL, FALLBACK_MODEL]));
+    for (const model of models) {
+      const narrative = await tryModel(model);
+      if (narrative) return narrative;
+    }
+    return null;
   } catch {
     return null;
   }
