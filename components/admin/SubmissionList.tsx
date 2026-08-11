@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { Archive, ArchiveRestore, Mail, MailOpen, ChevronDown } from "lucide-react";
 import { Badge } from "@/components/admin/ui";
 import { setSubmissionStatus } from "@/app/admin/(dashboard)/submissions/actions";
@@ -22,13 +22,25 @@ function money(cents: number, currency: string | null) {
   }).format(cents / 100);
 }
 
-function when(iso: string) {
+function absolute(iso: string) {
+  return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
+function relative(iso: string) {
   const d = new Date(iso);
   const mins = Math.round((Date.now() - d.getTime()) / 60000);
   if (mins < 1) return "just now";
   if (mins < 60) return `${mins}m ago`;
   if (mins < 60 * 24) return `${Math.round(mins / 60)}h ago`;
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  return absolute(iso);
+}
+
+// Server and client must agree on the first render, so start from the absolute
+// date (stable everywhere) and upgrade to "5m ago" once mounted.
+function When({ iso }: { iso: string }) {
+  const [label, setLabel] = useState(() => absolute(iso));
+  useEffect(() => setLabel(relative(iso)), [iso]);
+  return <span className="text-xs text-muted">{label}</span>;
 }
 
 function Row({
@@ -84,7 +96,7 @@ function Row({
               toggleOpen();
             }
           }}
-          className="flex flex-1 cursor-pointer items-start gap-3 text-left"
+          className="flex min-w-0 flex-1 cursor-pointer items-start gap-3 text-left"
         >
         <span className="mt-1 shrink-0">
           {isNew ? (
@@ -120,7 +132,7 @@ function Row({
         </span>
 
           <span className="ml-2 flex shrink-0 items-center gap-2">
-            <span className="text-xs text-muted">{when(submission.submitted_at)}</span>
+            <When iso={submission.submitted_at} />
             <ChevronDown
               size={15}
               className={`text-ink/35 transition ${open ? "rotate-180" : ""}`}
