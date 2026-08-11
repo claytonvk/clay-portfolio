@@ -126,7 +126,7 @@ there is one place to watch instead of a dozen inboxes. Submissions land under
 
 | Variable | Value |
 | --- | --- |
-| `HUB_INGEST_URL` | `https://clayvanderkolk.site/api/submissions/ingest` |
+| `HUB_INGEST_URL` | `https://clayvanderkolk.com/api/submissions/ingest` — use the canonical `.com`; `.site` takes two 307 hops to get here |
 | `HUB_INGEST_SECRET` | the *same* secret as above |
 | `HUB_SITE_SLUG` | the site's slug in this dashboard, so submissions link to the site row |
 | `HUB_SITE_LABEL` | optional friendly name shown in the inbox |

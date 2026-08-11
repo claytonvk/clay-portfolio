@@ -123,6 +123,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Could not store submission" }, { status: 500 });
   }
 
+  // Backfilled history is stored silently — one email per historical row would
+  // be hundreds of alerts and would blow through the Resend daily limit.
+  if (body.backfill === true) {
+    return NextResponse.json({ ok: true, id: inserted.id, backfill: true });
+  }
+
   // The submission is already safely stored — never fail the request because
   // the alert email did not go out.
   try {
