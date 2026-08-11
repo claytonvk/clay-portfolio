@@ -134,6 +134,19 @@ there is one place to watch instead of a dozen inboxes. Submissions land under
 A site with these unset simply does nothing — forms keep working exactly as
 before, so you can roll them out one at a time.
 
+**Sites that submit from the browser** (Vite SPAs: atlas-equipment,
+stone-bridge-buyers) have no server-side step to hold the secret, so they
+forward from a Supabase **Edge Function** instead. For those, set the same
+`HUB_*` values as *function secrets* (Edge Functions → Secrets) rather than as
+Vercel env vars, deploy the function, and point a **Database Webhook** at it:
+
+| Site | Function | Webhook on |
+| --- | --- | --- |
+| atlas-equipment | `notify-submission` (already deployed; now also forwards) | `email_submissions` insert |
+| stone-bridge-buyers | `notify-hub` (new — `supabase functions deploy notify-hub`) | `quote_form_submissions` insert |
+
+Both expect an `x-hook-secret` header matching the function's `HOOK_SECRET`.
+
 **Failure behaviour:** mirroring is best-effort and never blocks a customer. If
 this dashboard is down, slow (>4s), or returns an error, the client site still
 saves the submission, still emails the client, and still returns success — the
