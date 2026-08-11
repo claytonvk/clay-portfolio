@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { X } from "lucide-react";
+import SiteFilter from "@/components/admin/SiteFilter";
 import { createClient } from "@/lib/supabase/server";
 import { PageHeader, Stat, EmptyState } from "@/components/admin/ui";
 import SubmissionList from "@/components/admin/SubmissionList";
@@ -58,11 +60,39 @@ export default async function SubmissionsPage({
     .select("id", { count: "exact", head: true })
     .neq("status", "archived");
 
-  const sites = Array.from(
-    new Map(
-      submissions.map((s) => [s.site_slug, s.site_label || s.site_slug])
-    ).entries()
-  );
+  // Every registered site, plus any slug that has sent submissions without
+  // being registered — so the filter always shows the full roster rather than
+  // just whatever happens to be on this page.
+  const { data: allSites } = await supabase
+    .from("sites")
+    .select("slug, name")
+    .order("name");
+
+  const { data: slugRows } = await supabase
+    .from("form_submissions")
+    .select("site_slug, site_label")
+    .neq("status", "archived");
+
+  const counts = new Map<string, number>();
+  for (const r of slugRows ?? []) {
+    counts.set(r.site_slug, (counts.get(r.site_slug) ?? 0) + 1);
+  }
+
+  const siteMap = new Map<string, string>();
+  for (const s2 of allSites ?? []) siteMap.set(s2.slug, s2.name || s2.slug);
+  for (const r of slugRows ?? []) {
+    if (!siteMap.has(r.site_slug)) siteMap.set(r.site_slug, r.site_label || r.site_slug);
+  }
+
+  const sites = Array.from(siteMap.entries()).sort((a, b) => {
+    // Sites with submissions first, then alphabetical.
+    const ca = counts.get(a[0]) ?? 0;
+    const cb = counts.get(b[0]) ?? 0;
+    if ((ca > 0) !== (cb > 0)) return cb - ca;
+    return a[1].localeCompare(b[1]);
+  });
+
+  const activeSiteLabel = site ? siteMap.get(site) ?? site : null;
 
   return (
     <div>
@@ -92,32 +122,32 @@ export default async function SubmissionsPage({
           </Link>
         ))}
 
-        {sites.length > 1 && (
-          <div className="ml-auto flex flex-wrap gap-2">
-            <Link
-              href={`/admin/submissions?filter=${active.key}`}
-              className={`rounded-lg px-3 py-1.5 text-xs transition ${
-                !site ? "bg-ink/10" : "border border-ink/15 hover:bg-ink/[0.04]"
-              }`}
-            >
-              All sites
-            </Link>
-            {sites.map(([slug, label]) => (
-              <Link
-                key={slug}
-                href={`/admin/submissions?filter=${active.key}&site=${slug}`}
-                className={`rounded-lg px-3 py-1.5 text-xs transition ${
-                  site === slug
-                    ? "bg-ink/10"
-                    : "border border-ink/15 hover:bg-ink/[0.04]"
-                }`}
-              >
-                {label}
-              </Link>
-            ))}
-          </div>
-        )}
+        <div className="ml-auto">
+          <SiteFilter
+            sites={sites.map(([slug, label]) => ({
+              slug,
+              label,
+              count: counts.get(slug) ?? 0,
+            }))}
+            active={site ?? null}
+            filter={active.key}
+          />
+        </div>
       </div>
+
+      {activeSiteLabel && (
+        <div className="mb-4 flex items-center gap-2 text-sm">
+          <span className="text-muted">Showing only</span>
+          <Link
+            href={`/admin/submissions?filter=${active.key}`}
+            className="inline-flex items-center gap-1.5 rounded-full bg-ink text-cream px-3 py-1 text-xs font-medium hover:bg-ink/85 transition"
+            title="Clear site filter"
+          >
+            {activeSiteLabel}
+            <X size={13} />
+          </Link>
+        </div>
+      )}
 
       {error ? (
         <EmptyState
@@ -138,7 +168,7 @@ export default async function SubmissionsPage({
           }
         />
       ) : (
-        <SubmissionList submissions={submissions} />
+        <SubmissionList submissions={submissions} filterKey={active.key} />
       )}
     </div>
   );

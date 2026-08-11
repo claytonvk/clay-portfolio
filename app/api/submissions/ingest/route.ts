@@ -6,6 +6,11 @@ import type { SubmissionKind } from "@/lib/types";
 
 export const runtime = "nodejs";
 
+// Two identical submissions from one sender inside this window are one
+// submission, not two. Wide enough to swallow bot retries, short enough that a
+// genuine follow-up later in the day still comes through.
+const DUPLICATE_WINDOW_MS = 10 * 60 * 1000;
+
 const KINDS: SubmissionKind[] = [
   "contact",
   "order",
@@ -106,6 +111,32 @@ export async function POST(request: Request) {
         ? submittedAt
         : new Date().toISOString(),
   };
+
+  // Near-duplicate guard. A bot hammering a site's form writes one row per
+  // attempt, each with its own id, so external_id dedupe cannot catch it --
+  // the surf-stays form was producing three identical rows ~4s apart. Treat
+  // the same site + sender + message inside a short window as one submission.
+  if (body.backfill !== true) {
+    const windowStart = new Date(Date.now() - DUPLICATE_WINDOW_MS).toISOString();
+    let dupeQuery = supabase
+      .from("form_submissions")
+      .select("id")
+      .eq("site_slug", siteSlug)
+      .gte("created_at", windowStart)
+      .limit(1);
+
+    dupeQuery = row.email
+      ? dupeQuery.eq("email", row.email)
+      : dupeQuery.is("email", null);
+    dupeQuery = row.message
+      ? dupeQuery.eq("message", row.message)
+      : dupeQuery.is("message", null);
+
+    const { data: recent } = await dupeQuery;
+    if (recent && recent.length > 0) {
+      return NextResponse.json({ ok: true, duplicate: true, id: recent[0].id });
+    }
+  }
 
   const { data: inserted, error } = await supabase
     .from("form_submissions")

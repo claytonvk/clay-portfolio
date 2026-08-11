@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Archive, Mail, MailOpen, ChevronDown } from "lucide-react";
+import { Archive, ArchiveRestore, Mail, MailOpen, ChevronDown } from "lucide-react";
 import { Badge } from "@/components/admin/ui";
 import { setSubmissionStatus } from "@/app/admin/(dashboard)/submissions/actions";
 import type { SubmissionWithSite, SubmissionStatus } from "@/lib/types";
@@ -31,17 +31,31 @@ function when(iso: string) {
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
-function Row({ submission }: { submission: SubmissionWithSite }) {
+function Row({
+  submission,
+  filterKey,
+}: {
+  submission: SubmissionWithSite;
+  filterKey: string;
+}) {
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState<SubmissionStatus>(submission.status);
+  const [dismissed, setDismissed] = useState(false);
   const [, startTransition] = useTransition();
 
   function update(next: SubmissionStatus) {
     setStatus(next); // optimistic — the row is a local read model
+    // Archiving from an inbox view (or restoring from the archive) means the
+    // row no longer belongs here, so drop it instead of leaving it sitting there.
+    const leavesView =
+      filterKey === "archived" ? next !== "archived" : next === "archived";
+    if (leavesView) setDismissed(true);
     startTransition(() => {
       setSubmissionStatus(submission.id, next);
     });
   }
+
+  if (dismissed) return null;
 
   function toggleOpen() {
     setOpen((v) => !v);
@@ -59,10 +73,19 @@ function Row({ submission }: { submission: SubmissionWithSite }) {
         isNew ? "border-accent/40 bg-white" : "border-ink/10 bg-white/60"
       } ${status === "archived" ? "opacity-55" : ""}`}
     >
-      <button
-        onClick={toggleOpen}
-        className="flex w-full items-start gap-3 px-4 py-3 text-left"
-      >
+      <div className="flex items-start gap-1 px-4 py-3">
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={toggleOpen}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              toggleOpen();
+            }
+          }}
+          className="flex flex-1 cursor-pointer items-start gap-3 text-left"
+        >
         <span className="mt-1 shrink-0">
           {isNew ? (
             <Mail size={16} className="text-accent" />
@@ -96,14 +119,24 @@ function Row({ submission }: { submission: SubmissionWithSite }) {
           )}
         </span>
 
-        <span className="ml-2 flex shrink-0 items-center gap-2">
-          <span className="text-xs text-muted">{when(submission.submitted_at)}</span>
-          <ChevronDown
-            size={15}
-            className={`text-ink/35 transition ${open ? "rotate-180" : ""}`}
-          />
-        </span>
-      </button>
+          <span className="ml-2 flex shrink-0 items-center gap-2">
+            <span className="text-xs text-muted">{when(submission.submitted_at)}</span>
+            <ChevronDown
+              size={15}
+              className={`text-ink/35 transition ${open ? "rotate-180" : ""}`}
+            />
+          </span>
+        </div>
+
+        <button
+          onClick={() => update(status === "archived" ? "read" : "archived")}
+          title={status === "archived" ? "Unarchive" : "Archive"}
+          aria-label={status === "archived" ? "Unarchive submission" : "Archive submission"}
+          className="ml-1 shrink-0 rounded-lg p-2 text-ink/35 hover:bg-ink/[0.06] hover:text-ink transition"
+        >
+          {status === "archived" ? <ArchiveRestore size={15} /> : <Archive size={15} />}
+        </button>
+      </div>
 
       {open && (
         <div className="border-t border-ink/10 px-4 py-3 text-sm">
@@ -190,13 +223,15 @@ function Row({ submission }: { submission: SubmissionWithSite }) {
 
 export default function SubmissionList({
   submissions,
+  filterKey,
 }: {
   submissions: SubmissionWithSite[];
+  filterKey: string;
 }) {
   return (
     <div className="space-y-2">
       {submissions.map((s) => (
-        <Row key={s.id} submission={s} />
+        <Row key={s.id} submission={s} filterKey={filterKey} />
       ))}
     </div>
   );
