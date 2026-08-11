@@ -19,7 +19,8 @@ add its key.
    - `service_role` key (under "Project API keys") → `SUPABASE_SERVICE_ROLE_KEY`
 3. **SQL Editor → New query** → run each file in `supabase/migrations/` **in
    order**: `0001_init.sql`, then `0002_infra.sql` (Cloudflare detection), then
-   `0003_site_cloudflare.sql` (manual Cloudflare flag). Paste each → **Run**.
+   `0003_site_cloudflare.sql` (manual Cloudflare flag), then
+   `0004_form_submissions.sql` (master submission inbox). Paste each → **Run**.
 4. **Authentication → Users → Add user** → create one user with your email +
    a password. This is your login.
 5. **Authentication → Providers/Sign In** → turn **off** "Allow new users to
@@ -105,3 +106,35 @@ every project at once → open a site → **Run audit now**.
 - The whole `/admin` area is `noindex` and gated by Supabase Auth via
   `middleware.ts`. The public portfolio is untouched.
 - All API keys are server-only environment variables; none reach the browser.
+
+---
+
+## Master submission inbox
+
+Every client site mirrors its contact forms and orders into this dashboard, so
+there is one place to watch instead of a dozen inboxes. Submissions land under
+**Submissions**, and each new one emails `SUBMISSIONS_EMAIL_TO`.
+
+**1. On this dashboard** set:
+
+| Variable | Value |
+| --- | --- |
+| `SUBMISSIONS_INGEST_SECRET` | a long random string — generate with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` |
+| `SUBMISSIONS_EMAIL_TO` | where alerts go (falls back to `AUDIT_EMAIL_TO`) |
+
+**2. On each client site** set these three (four with the optional label):
+
+| Variable | Value |
+| --- | --- |
+| `HUB_INGEST_URL` | `https://clayvanderkolk.site/api/submissions/ingest` |
+| `HUB_INGEST_SECRET` | the *same* secret as above |
+| `HUB_SITE_SLUG` | the site's slug in this dashboard, so submissions link to the site row |
+| `HUB_SITE_LABEL` | optional friendly name shown in the inbox |
+
+A site with these unset simply does nothing — forms keep working exactly as
+before, so you can roll them out one at a time.
+
+**Failure behaviour:** mirroring is best-effort and never blocks a customer. If
+this dashboard is down, slow (>4s), or returns an error, the client site still
+saves the submission, still emails the client, and still returns success — the
+failure is only written to that site's logs.

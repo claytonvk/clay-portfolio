@@ -155,3 +155,43 @@ export interface Audit {
 export interface SiteWithAudit extends Site {
   latest_audit: Audit | null;
 }
+
+// --- Master form submission inbox ------------------------------------------
+// Every client site POSTs its contact forms and orders to this dashboard, so
+// there is one place to watch instead of a dozen inboxes.
+
+export type SubmissionKind =
+  | "contact"
+  | "order"
+  | "booking"
+  | "lead"
+  | "review"
+  | "other";
+
+export type SubmissionStatus = "new" | "read" | "archived";
+
+export interface FormSubmission {
+  id: string;
+  site_id: string | null;
+  site_slug: string;
+  site_label: string | null;
+  kind: SubmissionKind;
+  name: string | null;
+  email: string | null;
+  phone: string | null;
+  subject: string | null;
+  message: string | null;
+  amount_cents: number | null;
+  currency: string | null;
+  payload: Record<string, unknown>;
+  source_url: string | null;
+  status: SubmissionStatus;
+  external_id: string | null;
+  submitted_at: string;
+  created_at: string;
+}
+
+// A submission joined with the site it came from (when the slug matched).
+export interface SubmissionWithSite extends FormSubmission {
+  site: Pick<Site, "id" | "name" | "slug"> | null;
+}

@@ -14,6 +14,11 @@ export const env = {
   auditEmailTo: process.env.AUDIT_EMAIL_TO,
   auditEmailFrom: process.env.AUDIT_EMAIL_FROM || "onboarding@resend.dev",
   cronSecret: process.env.CRON_SECRET,
+  // Shared secret every client site presents to POST /api/submissions/ingest.
+  ingestSecret: process.env.SUBMISSIONS_INGEST_SECRET,
+  // Where new-submission alerts go. Falls back to the audit digest recipient.
+  submissionsEmailTo:
+    process.env.SUBMISSIONS_EMAIL_TO || process.env.AUDIT_EMAIL_TO,
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://clayvanderkolk.site",
   // Vercel project names/slugs to exclude from the dashboard (e.g. this very
   // portfolio). Comma-separated; matched case-insensitively against name + slug.

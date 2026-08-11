@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import {
   LayoutGrid,
+  Inbox,
   PlusCircle,
   Settings,
   LogOut,
@@ -15,6 +16,7 @@ import { createClient } from "@/lib/supabase/client";
 
 const NAV = [
   { href: "/admin", label: "Overview", icon: LayoutGrid, exact: true },
+  { href: "/admin/submissions", label: "Submissions", icon: Inbox },
   { href: "/admin/sites/new", label: "Add Site", icon: PlusCircle },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
