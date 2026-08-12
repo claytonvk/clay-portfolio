@@ -2,6 +2,7 @@ import "server-only";
 import { Resend } from "resend";
 import { env } from "@/lib/env";
 import type { Audit, Site } from "@/lib/types";
+import { formatPhone } from "@/lib/format";
 
 export function resendConfigured() {
   return Boolean(env.resendKey && env.auditEmailTo);
@@ -155,7 +156,7 @@ export async function sendSubmissionAlert(s: SubmissionAlert): Promise<boolean> 
     <table style="width:100%;border-collapse:collapse;">
       ${detail("Name", s.name)}
       ${detail("Email", s.email)}
-      ${detail("Phone", s.phone)}
+      ${detail("Phone", formatPhone(s.phone))}
       ${detail("Subject", s.subject)}
       ${detail("Page", s.source_url)}
     </table>

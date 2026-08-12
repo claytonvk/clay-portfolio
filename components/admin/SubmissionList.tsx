@@ -3,6 +3,7 @@
 import { useState, useEffect, useTransition } from "react";
 import { Archive, ArchiveRestore, Mail, MailOpen, ChevronDown } from "lucide-react";
 import { Badge } from "@/components/admin/ui";
+import { formatPhone, telHref } from "@/lib/format";
 import { setSubmissionStatus } from "@/app/admin/(dashboard)/submissions/actions";
 import type { SubmissionWithSite, SubmissionStatus } from "@/lib/types";
 
@@ -167,8 +168,8 @@ function Row({
               <>
                 <dt className="text-xs text-muted">Phone</dt>
                 <dd>
-                  <a className="underline" href={`tel:${submission.phone}`}>
-                    {submission.phone}
+                  <a className="underline" href={`tel:${telHref(submission.phone)}`}>
+                    {formatPhone(submission.phone)}
                   </a>
                 </dd>
               </>
