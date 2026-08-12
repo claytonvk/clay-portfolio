@@ -16,11 +16,14 @@ export default function SiteFilter({
   sites,
   active,
   filter,
+  type,
 }: {
   sites: SiteOption[];
   active: string | null;
   filter: string;
+  type?: string;
 }) {
+  const suffix = type && type !== "all" ? `&type=${type}` : "";
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -49,7 +52,7 @@ export default function SiteFilter({
       {open && (
         <div className="absolute right-0 z-30 mt-1 max-h-80 w-72 overflow-y-auto rounded-xl border border-ink/12 bg-white py-1 shadow-lg">
           <Link
-            href={`/admin/submissions?filter=${filter}`}
+            href={`/admin/submissions?filter=${filter}${suffix}`}
             onClick={() => setOpen(false)}
             className="flex items-center justify-between gap-2 px-3 py-2 text-sm hover:bg-ink/[0.04]"
           >
@@ -62,7 +65,7 @@ export default function SiteFilter({
           {sites.map((s) => (
             <Link
               key={s.slug}
-              href={`/admin/submissions?filter=${filter}&site=${encodeURIComponent(s.slug)}`}
+              href={`/admin/submissions?filter=${filter}${suffix}&site=${encodeURIComponent(s.slug)}`}
               onClick={() => setOpen(false)}
               className="flex items-center justify-between gap-2 px-3 py-2 text-sm hover:bg-ink/[0.04]"
             >

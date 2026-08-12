@@ -14,13 +14,25 @@ const FILTERS: { key: string; label: string; status?: SubmissionStatus }[] = [
   { key: "archived", label: "Archived", status: "archived" },
 ];
 
+// Orders and bookings are the ones with money attached; everything else is an
+// enquiry. Splitting them makes "what did I sell" a single click.
+const ORDER_KINDS = ["order", "booking"];
+const FORM_KINDS = ["contact", "lead", "review", "other"];
+
+const TYPES: { key: string; label: string; kinds?: string[] }[] = [
+  { key: "all", label: "Everything" },
+  { key: "orders", label: "Orders & bookings", kinds: ORDER_KINDS },
+  { key: "forms", label: "Enquiries", kinds: FORM_KINDS },
+];
+
 export default async function SubmissionsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ filter?: string; site?: string }>;
+  searchParams: Promise<{ filter?: string; site?: string; type?: string }>;
 }) {
-  const { filter = "new", site } = await searchParams;
+  const { filter = "new", site, type = "all" } = await searchParams;
   const active = FILTERS.find((f) => f.key === filter) ?? FILTERS[0];
+  const activeType = TYPES.find((t) => t.key === type) ?? TYPES[0];
 
   const supabase = await createClient();
   if (!supabase) {
@@ -45,6 +57,7 @@ export default async function SubmissionsPage({
   if (active.status) query = query.eq("status", active.status);
   else query = query.neq("status", "archived");
   if (site) query = query.eq("site_slug", site);
+  if (activeType.kinds) query = query.in("kind", activeType.kinds);
 
   const { data, error } = await query;
   const submissions = (data ?? []) as unknown as SubmissionWithSite[];
@@ -59,6 +72,21 @@ export default async function SubmissionsPage({
     .from("form_submissions")
     .select("id", { count: "exact", head: true })
     .neq("status", "archived");
+
+  // Booked value across orders and bookings, so the number is visible without
+  // switching tabs.
+  let orderQuery = supabase
+    .from("form_submissions")
+    .select("amount_cents")
+    .in("kind", ORDER_KINDS)
+    .neq("status", "archived");
+  if (site) orderQuery = orderQuery.eq("site_slug", site);
+  const { data: orderRows } = await orderQuery;
+  const bookedCount = orderRows?.length ?? 0;
+  const bookedValue = (orderRows ?? []).reduce(
+    (sum, r) => sum + (r.amount_cents ?? 0),
+    0
+  );
 
   // Every registered site, plus any slug that has sent submissions without
   // being registered — so the filter always shows the full roster rather than
@@ -94,6 +122,16 @@ export default async function SubmissionsPage({
 
   const activeSiteLabel = site ? siteMap.get(site) ?? site : null;
 
+  const href = (over: { filter?: string; type?: string; site?: string | null }) => {
+    const f = over.filter ?? active.key;
+    const t = over.type ?? activeType.key;
+    const sl = over.site === undefined ? site : over.site;
+    const qs = new URLSearchParams({ filter: f });
+    if (t !== "all") qs.set("type", t);
+    if (sl) qs.set("site", sl);
+    return `/admin/submissions?${qs.toString()}`;
+  };
+
   return (
     <div>
       <PageHeader
@@ -101,16 +139,40 @@ export default async function SubmissionsPage({
         subtitle="Every contact form and order across all your sites, in one inbox."
       />
 
-      <div className="mb-6 grid gap-3 sm:grid-cols-2">
+      <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Stat label="Unread" value={newCount ?? 0} />
         <Stat label="Total" value={totalCount ?? 0} />
+        <Stat label="Orders & bookings" value={bookedCount} />
+        <Stat
+          label="Booked value"
+          value={`$${(bookedValue / 100).toLocaleString("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}`}
+        />
+      </div>
+
+      <div className="mb-3 flex flex-wrap items-center gap-2">
+        {TYPES.map((t) => (
+          <Link
+            key={t.key}
+            href={href({ type: t.key })}
+            className={`rounded-full px-3 py-1 text-xs font-medium transition ${
+              t.key === activeType.key
+                ? "bg-accent/25 text-ink"
+                : "border border-ink/15 text-ink/60 hover:bg-ink/[0.04]"
+            }`}
+          >
+            {t.label}
+          </Link>
+        ))}
       </div>
 
       <div className="mb-4 flex flex-wrap items-center gap-2">
         {FILTERS.map((f) => (
           <Link
             key={f.key}
-            href={`/admin/submissions?filter=${f.key}${site ? `&site=${site}` : ""}`}
+            href={href({ filter: f.key })}
             className={`rounded-lg px-3 py-1.5 text-sm font-medium transition ${
               f.key === active.key
                 ? "bg-ink text-cream"
@@ -131,6 +193,7 @@ export default async function SubmissionsPage({
             }))}
             active={site ?? null}
             filter={active.key}
+            type={activeType.key}
           />
         </div>
       </div>
@@ -139,7 +202,7 @@ export default async function SubmissionsPage({
         <div className="mb-4 flex items-center gap-2 text-sm">
           <span className="text-muted">Showing only</span>
           <Link
-            href={`/admin/submissions?filter=${active.key}`}
+            href={href({ site: null })}
             className="inline-flex items-center gap-1.5 rounded-full bg-ink text-cream px-3 py-1 text-xs font-medium hover:bg-ink/85 transition"
             title="Clear site filter"
           >
