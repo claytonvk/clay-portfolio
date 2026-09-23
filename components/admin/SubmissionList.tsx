@@ -47,9 +47,11 @@ function When({ iso }: { iso: string }) {
 function Row({
   submission,
   filterKey,
+  onRead,
 }: {
   submission: SubmissionWithSite;
   filterKey: string;
+  onRead: (submission: SubmissionWithSite) => void;
 }) {
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState<SubmissionStatus>(submission.status);
@@ -72,7 +74,13 @@ function Row({
 
   function toggleOpen() {
     setOpen((v) => !v);
-    if (!open && status === "new") update("read");
+    if (!open && status === "new") {
+      // Marking it read revalidates the page, and a read row no longer matches
+      // the New tab's query — so ask the list to hold onto it first. Otherwise
+      // the row disappears out from under you the instant you open it.
+      onRead(submission);
+      update("read");
+    }
   }
 
   const isNew = status === "new";
@@ -241,10 +249,39 @@ export default function SubmissionList({
   submissions: SubmissionWithSite[];
   filterKey: string;
 }) {
+  // Rows you open get marked read, which drops them out of the server list for
+  // this view. Pin them here so they stay where they are while you read; they
+  // clear on the next load of the tab, once you've actually read them.
+  const [pinned, setPinned] = useState<Map<string, SubmissionWithSite>>(new Map());
+
+  // A different tab is a different inbox — nothing carries over.
+  const [seenFilter, setSeenFilter] = useState(filterKey);
+  if (seenFilter !== filterKey) {
+    setSeenFilter(filterKey);
+    setPinned(new Map());
+  }
+
+  function pin(submission: SubmissionWithSite) {
+    setPinned((prev) => {
+      if (prev.has(submission.id)) return prev;
+      const next = new Map(prev);
+      next.set(submission.id, submission);
+      return next;
+    });
+  }
+
+  const present = new Set(submissions.map((s) => s.id));
+  const rows = [...submissions];
+  for (const [id, s] of pinned) if (!present.has(id)) rows.push(s);
+  rows.sort(
+    (a, b) =>
+      new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime()
+  );
+
   return (
     <div className="space-y-2">
-      {submissions.map((s) => (
-        <Row key={s.id} submission={s} filterKey={filterKey} />
+      {rows.map((s) => (
+        <Row key={s.id} submission={s} filterKey={filterKey} onRead={pin} />
       ))}
     </div>
   );
